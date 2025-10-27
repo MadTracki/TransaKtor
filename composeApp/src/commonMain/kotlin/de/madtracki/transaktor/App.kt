@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import de.madtracki.transaktor.config.AppConfig
 import de.madtracki.transaktor.di.appModule
+import de.madtracki.transaktor.di.useCaseModule
 import de.madtracki.transaktor.di.vmModule
 import de.madtracki.transaktor.ui.navigation.AppNavHost
 import de.madtracki.transaktor.ui.theme.AppTheme
@@ -16,6 +17,7 @@ fun App(appConfig: AppConfig = AppConfig.Prod) {
     KoinApplication(application = {
         modules(
             appModule(appConfig),
+            useCaseModule,
             vmModule,
         )
     }) {

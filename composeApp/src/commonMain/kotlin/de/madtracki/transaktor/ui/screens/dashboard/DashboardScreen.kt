@@ -55,7 +55,7 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = koinViewModel(),
     outerPadding: PaddingValues = PaddingValues(),
     navigateToProfile: () -> Unit,
-    navigateToAccountDetail: (id: String) -> Unit,
+    navigateToAccountDetail: (id: Long) -> Unit,
     navigateToTransactionDetail: (id: String) -> Unit,
     navigateToAllTransactions: () -> Unit
 ) {
@@ -99,7 +99,7 @@ fun DashboardContent(
     accountItems: List<AccountItem>,
     transactionItems: List<TransactionItem>,
     navigateToProfile: () -> Unit,
-    navigateToAccountDetail: (id: String) -> Unit,
+    navigateToAccountDetail: (id: Long) -> Unit,
     navigateToTransactionDetail: (id: String) -> Unit,
     navigateToAllTransactions: () -> Unit
 ) {
@@ -160,7 +160,7 @@ fun DashboardContent(
 
 fun LazyListScope.YourAccounts(
     accounts: List<AccountItem>,
-    navigateToAccountDetail: (id: String) -> Unit
+    navigateToAccountDetail: (id: Long) -> Unit
 ) {
     item {
         Text(
@@ -215,7 +215,7 @@ fun DashboardScreenPreview(
             totalFunds = TotalFunds(balance = "42,899.03", name = "Max Mustermann"),
             accountItems = listOf(
                 AccountItem(
-                    id = "1",
+                    id = 1,
                     name = "Account 1",
                     balance = "100.00",
                     color = Color(0xFF000000)

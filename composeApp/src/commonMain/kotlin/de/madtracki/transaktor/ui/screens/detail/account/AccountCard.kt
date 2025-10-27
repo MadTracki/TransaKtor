@@ -28,7 +28,7 @@ import transaktor.composeapp.generated.resources.Res
 import transaktor.composeapp.generated.resources.account_balance_wallet
 
 @Composable
-fun AccountCard(accountItem: AccountItem, onClick: (id: String) -> Unit) {
+fun AccountCard(accountItem: AccountItem, onClick: (id: Long) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

@@ -8,7 +8,7 @@ import de.madtracki.transaktor.data.model.Turnover
 
 interface BankingRepository {
     suspend fun getAccounts(): List<Account>
-    suspend fun getAccountDetails(accountId: String): AccountWithTurnovers
+    suspend fun getAccountDetails(accountId: Long): AccountWithTurnovers
     suspend fun getTurnovers(): List<Turnover>
 
     suspend fun getTurnover(id: String): Turnover
@@ -20,9 +20,9 @@ class BankingRepositoryImpl(private val api: BankingApi) : BankingRepository {
         return api.getAccounts()
     }
 
-    override suspend fun getAccountDetails(accountId: String): AccountWithTurnovers {
+    override suspend fun getAccountDetails(accountId: Long): AccountWithTurnovers {
         val accounts = api.getAccounts()
-        val account = accounts.firstOrNull { it.id.toString() == accountId }
+        val account = accounts.firstOrNull { it.id == accountId }
             ?: throw NoSuchElementException("Account with id $accountId not found")
 
         val allTurnovers = api.getTurnovers()

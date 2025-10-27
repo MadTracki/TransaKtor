@@ -46,7 +46,7 @@ import transaktor.composeapp.generated.resources.arrow_back
 
 @Composable
 fun AccountDetailScreen(
-    accountId: String,
+    accountId: Long,
     viewModel: AccountDetailViewModel = koinViewModel(),
     onBack: () -> Unit,
     navigateToTransaction: (id: String) -> Unit
