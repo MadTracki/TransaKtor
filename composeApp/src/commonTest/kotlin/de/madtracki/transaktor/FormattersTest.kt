@@ -93,10 +93,6 @@ class FormattersKtTest {
         assertEquals("+100.00$", formatAmount(100.0, "$"))
         assertEquals("+100.00£", formatAmount(100.0, "£"))
         assertEquals("+100.00¥", formatAmount(100.0, "¥"))
-    }
-
-    @Test
-    fun `formatAmount with an empty currency string`() {
         assertEquals("+100.00", formatAmount(100.0, ""))
     }
 

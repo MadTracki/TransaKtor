@@ -1,47 +1,53 @@
 # TransaKtor
 
-A demo banking project breaking down accounts into transactions, showcasing a basic 
-Kotlin Multiplatform project with Compose Multiplatform, Ktor, Room, Coroutines, and Koin.
+A demo banking project breaking down accounts into transactions, showcasing a basic
+Kotlin Multiplatform project with Compose Multiplatform, Ktor, Coroutines, and Koin.
 
-## Initial Mockup
-<img src="images/screen1.png" alt="screen 1" width="20%"/>
-<img src="images/screen2.png" alt="screen 2" width="20%"/>
-<img src="images/screen3.png" alt="screen 3" width="20%"/>
-<img src="images/screen4.png" alt="screen 4" width="20%"/>
+## Project Structure
 
-
-This is a Kotlin Multiplatform project targeting Android, iOS.
-
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
-
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+This is a Kotlin Multiplatform project targeting Android and iOS while sharing the UI by using
+Compose Multiplatform.
 
 ### Build and Run Android Application
 
-To build and run the development version of the Android app, use the run configuration from the run widget
+You should be able to run the Android app of this KMP project like any other Android app.
+Open the project in Android Studio and use the run configuration from the run widget
 in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
+
+```shell
   ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+```
 
 ### Build and Run iOS Application
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+To build and run the iOS app you need a functioning KMP development environment, see
+[Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html).
+Either, use the run configuration from the run widget in Android Studio or open the
+[/iosApp](./iosApp) directory in Xcode and run it from there.
 
----
+### Running Tests
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+You can run the tests of this project via the "Execute Gradle Task" Button in Android Studio or
+directly from the terminal:
+
+```shell
+  ./gradlew :composeApp:allTests
+```
+
+Note that, currently the test coverage is not very high and that some tests fail. As this project is
+a proof of concept, which was developed in a tight timeframe, not all features are fully
+implemented.
+Those features may fail the test, though, I wanted to have the test cases for the final
+to-be-desired state in place.
+
+## Initial Mockup
+
+The initial goal was to fully utilize the available data of the API. It contains a list of accounts
+and list of transactions.
+A simple main-detail navigation utilizing a dashboard and a detail screens for accounts and
+transactions should do the trick to help the users understand his banking portfolio.
+
+I created a mockup of the app using Figma to get an idea of what I wanted to achieve.
+
+<img src="images/screen1.png" alt="screen 1" width="20%"/><img src="images/screen2.png" alt="screen 2" width="20%"/><img src="images/screen3.png" alt="screen 3" width="20%"/><img src="images/screen4.png" alt="screen 4" width="20%"/>
+
