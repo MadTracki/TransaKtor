@@ -1,6 +1,7 @@
 package de.madtracki.transaktor.data.usecase
 
 import androidx.compose.ui.graphics.Color
+import de.madtracki.transaktor.data.model.AccountWithTurnovers
 import de.madtracki.transaktor.data.model.Turnover
 import de.madtracki.transaktor.data.repository.BankingRepository
 import de.madtracki.transaktor.ui.screens.dashboard.model.AccountsOverviewState
@@ -8,6 +9,8 @@ import de.madtracki.transaktor.ui.screens.dashboard.model.TotalFunds
 import de.madtracki.transaktor.ui.screens.detail.account.model.AccountItem
 import de.madtracki.transaktor.ui.screens.detail.transaction.model.TransactionItem
 import de.madtracki.transaktor.util.formatAmount
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Use case for retrieving and converting account turnovers to a list of [TransactionItem] objects.
@@ -32,10 +35,22 @@ class GetAccountsOverviewUseCaseImpl(
         val currency: String
     )
 
-    override suspend fun invoke(censorCardNumber: Boolean): AccountsOverviewState {
-        val accounts = bankingRepository.getAccounts()
-        val accountsWithTurnovers = accounts.map {
-            bankingRepository.getAccountDetails(it.id)
+    override suspend fun invoke(censorCardNumber: Boolean): AccountsOverviewState = coroutineScope {
+        // Fetch accounts and turnovers concurrently
+        val accountsDeferred = async { bankingRepository.getAccounts() }
+        val turnoversDeferred = async { bankingRepository.getTurnovers() }
+
+        // Await both results
+        val accounts = accountsDeferred.await()
+        val allTurnovers = turnoversDeferred.await()
+
+        // Group turnovers by account ID for faster lookup
+        val turnoversByAccountId = allTurnovers.groupBy { it.accountId }
+
+        // Process accounts in parallel
+        val accountsWithTurnovers = accounts.map { account ->
+            val accountTurnovers = turnoversByAccountId[account.id] ?: emptyList()
+            AccountWithTurnovers(account, accountTurnovers)
         }
 
         // Map accounts to AccountItem
@@ -71,7 +86,7 @@ class GetAccountsOverviewUseCaseImpl(
             name = "Max Mustermann" // Placeholder. Not available in API
         )
 
-        return AccountsOverviewState(
+        return@coroutineScope AccountsOverviewState(
             totalFunds,
             accounts = accountItems,
             transactions = newestThreeTransactions
