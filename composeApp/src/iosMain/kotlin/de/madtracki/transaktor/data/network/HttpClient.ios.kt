@@ -19,7 +19,8 @@ actual fun getHttpClient(configuration: HttpClientConfig<*>.() -> Unit): HttpCli
                     ignoreUnknownKeys = true
                     prettyPrint = true
                     isLenient = true
-                }
+                },
+                contentType = io.ktor.http.ContentType.Text.Html
             )
         }
         install(Logging) {

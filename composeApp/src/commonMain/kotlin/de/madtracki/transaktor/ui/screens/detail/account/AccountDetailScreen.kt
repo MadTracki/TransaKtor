@@ -1,6 +1,7 @@
 package de.madtracki.transaktor.ui.screens.detail.account
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,11 +24,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.madtracki.transaktor.data.model.Result
 import de.madtracki.transaktor.ui.screens.dashboard.TotalBalanceCard
 import de.madtracki.transaktor.ui.screens.dashboard.TransactionList
 import de.madtracki.transaktor.ui.screens.detail.transaction.model.TransactionItem
@@ -53,15 +55,33 @@ fun AccountDetailScreen(
         viewModel.loadAccountDetail(accountId)
     }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    AccountDetailContent(
-        accountName = uiState.accountName,
-        balance = uiState.balance,
-        transactions = uiState.transactions,
-        onBack = onBack,
-        onTransactionClick = navigateToTransaction
-    )
+    Column(
+        Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        when (uiState) {
+            is Result.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is Result.Error -> {
+                Text(text = uiState.throwable.message.toString())
+            }
+
+            is Result.Success -> {
+                AccountDetailContent(
+                    accountName = uiState.data.accountName,
+                    balance = uiState.data.balance,
+                    transactions = uiState.data.transactions,
+                    onBack = onBack,
+                    onTransactionClick = navigateToTransaction
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,7 +154,7 @@ fun AccountDetailContent(
             TransactionList(
                 transactions,
                 showSeeAllButton = false,
-                navigateToTransactionDetail = {},
+                navigateToTransactionDetail = onTransactionClick,
                 navigateToAllTransactions = {}
             )
         }

@@ -5,6 +5,8 @@ import de.madtracki.transaktor.data.api.BankingApi
 import de.madtracki.transaktor.data.api.BankingApiImpl
 import de.madtracki.transaktor.data.api.configureApi
 import de.madtracki.transaktor.data.network.getHttpClient
+import de.madtracki.transaktor.data.repository.BankingRepository
+import de.madtracki.transaktor.data.repository.BankingRepositoryImpl
 import de.madtracki.transaktor.ui.screens.dashboard.DashboardViewModel
 import de.madtracki.transaktor.ui.screens.detail.account.AccountDetailViewModel
 import io.ktor.client.HttpClient
@@ -19,15 +21,15 @@ fun appModule(appConfig: AppConfig) = module {
     
     // Banking API
     single<BankingApi> { BankingApiImpl(client = get()) }
-    
-    //single<BankingRepository> { BankingRepositoryImpl(api = get()) }
+
+    single<BankingRepository> { BankingRepositoryImpl(api = get()) }
 }
 
 val vmModule = module {
     factory<DashboardViewModel> {
-        DashboardViewModel(/*bankingRepository = get()*/)
+        DashboardViewModel(bankingRepository = get())
     }
     factory<AccountDetailViewModel> {
-        AccountDetailViewModel(/*bankingRepository = get()*/)
+        AccountDetailViewModel(bankingRepository = get())
     }
 }

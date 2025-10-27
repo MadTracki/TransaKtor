@@ -2,6 +2,7 @@ package de.madtracki.transaktor.ui.screens.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,11 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import de.madtracki.transaktor.data.model.Result
 import de.madtracki.transaktor.ui.screens.dashboard.model.TotalFunds
 import de.madtracki.transaktor.ui.screens.detail.account.AccountCard
 import de.madtracki.transaktor.ui.screens.detail.account.model.AccountItem
@@ -56,20 +59,36 @@ fun DashboardScreen(
     navigateToTransactionDetail: (id: String) -> Unit,
     navigateToAllTransactions: () -> Unit
 ) {
-    val totalFunds by viewModel.totalFunds.collectAsStateWithLifecycle()
-    val accounts by viewModel.accounts.collectAsStateWithLifecycle()
-    val transactionItems by viewModel.transactions.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    DashboardContent(
-        outerPadding = outerPadding,
-        totalFunds = totalFunds,
-        accountItems = accounts,
-        transactionItems = transactionItems,
-        navigateToProfile = navigateToProfile,
-        navigateToAccountDetail = navigateToAccountDetail,
-        navigateToTransactionDetail = navigateToTransactionDetail,
-        navigateToAllTransactions = navigateToAllTransactions
-    )
+    Column(
+        Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        when (uiState) {
+            is Result.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is Result.Error -> {
+                Text(text = uiState.throwable.message.toString())
+            }
+
+            is Result.Success -> {
+                DashboardContent(
+                    outerPadding = outerPadding,
+                    totalFunds = uiState.data.totalFunds,
+                    accountItems = uiState.data.accounts,
+                    transactionItems = uiState.data.transactions,
+                    navigateToProfile = navigateToProfile,
+                    navigateToAccountDetail = navigateToAccountDetail,
+                    navigateToTransactionDetail = navigateToTransactionDetail,
+                    navigateToAllTransactions = navigateToAllTransactions
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

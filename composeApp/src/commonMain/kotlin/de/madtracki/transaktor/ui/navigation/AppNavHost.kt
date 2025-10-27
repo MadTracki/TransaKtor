@@ -1,6 +1,12 @@
 package de.madtracki.transaktor.ui.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -55,6 +61,18 @@ fun AppNavHost(
                     navController.navigate(Screen.TransactionDetail(it))
                 }
             )
+        }
+
+        composable<Screen.TransactionDetail> { backStackEntry ->
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) { Text("Transaction Detail for id:\n\n${backStackEntry.toRoute<Screen.TransactionDetail>().transactionId}") }
+            //TransactionDetailScreen(
+            //    transactionId = backStackEntry.toRoute<Screen.TransactionDetail>().transactionId,
+            //    onBack = { navController.popBackStack() }
+            //)
         }
     }
 }
