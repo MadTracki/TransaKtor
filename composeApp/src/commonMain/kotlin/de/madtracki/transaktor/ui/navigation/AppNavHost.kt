@@ -5,8 +5,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import de.madtracki.transaktor.ui.navigation.destinations.Screen
 import de.madtracki.transaktor.ui.screens.dashboard.DashboardScreen
+import de.madtracki.transaktor.ui.screens.detail.account.AccountDetailScreen
 import de.madtracki.transaktor.ui.screens.onboarding.OnboardingScreen
 
 @Composable
@@ -20,7 +22,7 @@ fun AppNavHost(
         startDestination = if (isOnboardingDone) Screen.Dashboard else Screen.Onboarding,
     ) {
 
-        composable<Screen.Onboarding> {
+        composable<Screen.Onboarding> { backStackEntry ->
             OnboardingScreen {
                 navController.navigate(
                     route = Screen.Dashboard,
@@ -32,16 +34,26 @@ fun AppNavHost(
             }
         }
 
-        composable<Screen.Dashboard> {
+        composable<Screen.Dashboard> { backStackEntry ->
             DashboardScreen(
                 navigateToProfile = {},
-                navigateToAccountDetail = {},
+                navigateToAccountDetail = {
+                    navController.navigate(Screen.AccountDetail(it))
+                },
                 navigateToTransactionDetail = {
-                    navController.navigate(
-                        route = Screen.TransactionDetail,
-                    )
+                    navController.navigate(Screen.TransactionDetail(it))
                 },
                 navigateToAllTransactions = {},
+            )
+        }
+
+        composable<Screen.AccountDetail> { backStackEntry ->
+            AccountDetailScreen(
+                accountId = backStackEntry.toRoute<Screen.AccountDetail>().accountId,
+                onBack = { navController.popBackStack() },
+                navigateToTransaction = {
+                    navController.navigate(Screen.TransactionDetail(it))
+                }
             )
         }
     }

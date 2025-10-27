@@ -3,7 +3,6 @@ package de.madtracki.transaktor.ui.screens.dashboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,21 +23,17 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import de.madtracki.transaktor.presentation.dashboard.DashboardViewModel
 import de.madtracki.transaktor.ui.screens.dashboard.model.TotalFunds
 import de.madtracki.transaktor.ui.screens.detail.account.AccountCard
 import de.madtracki.transaktor.ui.screens.detail.account.model.AccountItem
-import de.madtracki.transaktor.ui.screens.detail.transaction.TransactionCard
 import de.madtracki.transaktor.ui.screens.detail.transaction.model.TransactionItem
 import de.madtracki.transaktor.ui.screens.detail.transaction.model.TransactionItemListPreviewParameterProvider
 import de.madtracki.transaktor.ui.theme.AppTheme
@@ -49,8 +43,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.koin.compose.viewmodel.koinViewModel
 import transaktor.composeapp.generated.resources.Res
-import transaktor.composeapp.generated.resources.dashboard_see_all
-import transaktor.composeapp.generated.resources.dashboard_transactions
+import transaktor.composeapp.generated.resources.dashboard_total_available_funds
 import transaktor.composeapp.generated.resources.dashboard_your_accounts
 import transaktor.composeapp.generated.resources.person
 
@@ -125,14 +118,20 @@ fun DashboardContent(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp),
-            //verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { TotalBalanceCard(balance = totalFunds.balance, name = totalFunds.name) }
+            item {
+                TotalBalanceCard(
+                    balance = totalFunds.balance,
+                    name = totalFunds.name,
+                    title = stringResource(Res.string.dashboard_total_available_funds)
+                )
+            }
             item { Spacer(modifier = Modifier.height(32.dp)) }
             YourAccounts(accountItems, navigateToAccountDetail)
             item { Spacer(modifier = Modifier.height(32.dp)) }
-            Transactions(
+            TransactionList(
                 transactionItems,
+                showSeeAllButton = true,
                 navigateToTransactionDetail,
                 navigateToAllTransactions
             )
@@ -182,35 +181,6 @@ fun LazyListScope.YourAccounts(
                 AccountCard(accountItem = account, onClick = navigateToAccountDetail)
             }
         }
-    }
-}
-
-fun LazyListScope.Transactions(
-    transactionItems: List<TransactionItem>,
-    navigateToTransactionDetail: (id: String) -> Unit,
-    navigateToAllTransactions: () -> Unit
-) {
-    item {
-        Row(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(Res.string.dashboard_transactions),
-                style = MaterialTheme.typography.titleLarge
-            )
-            TextButton(onClick = navigateToAllTransactions) {
-                Text(text = stringResource(Res.string.dashboard_see_all))
-            }
-        }
-    }
-    item { Spacer(modifier = Modifier.height(8.dp)) }
-    items(transactionItems) { transaction ->
-        TransactionCard(
-            transactionItem = transaction,
-            onClick = navigateToTransactionDetail
-        )
     }
 }
 

@@ -12,16 +12,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.stringResource
-import transaktor.composeapp.generated.resources.Res
-import transaktor.composeapp.generated.resources.dashboard_total_available_funds
+import de.madtracki.transaktor.ui.theme.AppTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TotalBalanceCard(balance: String, name: String) {
+fun TotalBalanceCard(
+    balance: String,
+    name: String,
+    title: String,
+    modifier: Modifier = Modifier
+) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
     ) {
         Column(
@@ -31,7 +36,7 @@ fun TotalBalanceCard(balance: String, name: String) {
             verticalArrangement = Arrangement.spacedBy(48.dp)
         ) {
             Text(
-                text = stringResource(Res.string.dashboard_total_available_funds),
+                text = title,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -46,5 +51,18 @@ fun TotalBalanceCard(balance: String, name: String) {
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TotalBalanceCardPreview() {
+    AppTheme {
+        TotalBalanceCard(
+            modifier = Modifier.padding(8.dp),
+            balance = "1.234,56 €",
+            name = "John Doe",
+            title = "Total Balance"
+        )
     }
 }

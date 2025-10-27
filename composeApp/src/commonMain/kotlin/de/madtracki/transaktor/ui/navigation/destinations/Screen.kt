@@ -24,9 +24,14 @@ sealed interface Screen {
     }
 
     @Serializable
-    @SerialName("newsdetail")
-    data class TransactionDetail(val transactionId: Int) : Screen {
+    @SerialName("accountdetail")
+    data class AccountDetail(val accountId: String) : Screen {
+        override val route: String by lazy { serializer().descriptor.serialName }
+    }
+
+    @Serializable
+    @SerialName("transactiondetail")
+    data class TransactionDetail(val transactionId: String) : Screen {
         override val route: String by lazy { serializer().descriptor.serialName }
     }
 }
-

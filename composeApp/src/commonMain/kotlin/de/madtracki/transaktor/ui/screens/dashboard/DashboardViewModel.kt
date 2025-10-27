@@ -1,4 +1,4 @@
-package de.madtracki.transaktor.presentation.dashboard
+package de.madtracki.transaktor.ui.screens.dashboard
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
