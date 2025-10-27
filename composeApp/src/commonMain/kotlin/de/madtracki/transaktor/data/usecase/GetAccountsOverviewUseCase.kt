@@ -7,20 +7,18 @@ import de.madtracki.transaktor.data.repository.BankingRepository
 import de.madtracki.transaktor.ui.screens.dashboard.model.AccountsOverviewState
 import de.madtracki.transaktor.ui.screens.dashboard.model.TotalFunds
 import de.madtracki.transaktor.ui.screens.detail.account.model.AccountItem
-import de.madtracki.transaktor.ui.screens.detail.transaction.model.TransactionItem
 import de.madtracki.transaktor.util.formatAmount
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 /**
- * Use case for retrieving and converting account turnovers to a list of [TransactionItem] objects.
+ * Use case for retrieving and converting all accounts and their turnovers to [AccountsOverviewState] object.
  */
 interface GetAccountsOverviewUseCase {
     /**
-     * Retrieves account details and converts the turnovers to a list of transaction items.
+     * Retrieves all account details and the three newest transactions.
      *
-     * @param accountId The ID of the account to get transactions for.
-     * @return A list of [TransactionItem] objects.
+     * @return A [AccountsOverviewState] object.
      */
     suspend operator fun invoke(censorCardNumber: Boolean = true): AccountsOverviewState
 }

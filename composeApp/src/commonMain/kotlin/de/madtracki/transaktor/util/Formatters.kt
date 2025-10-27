@@ -6,6 +6,7 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.abs
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -26,5 +27,5 @@ fun formatDateTime(timestamp: Long): String {
 
 fun formatAmount(amount: Double, currency: String): String {
     // TODO implement proper DecimalFormat
-    return "${if (amount >= 0.0) "+" else ""}$amount$currency"
+    return "${if (amount >= 0.0) "+" else "-"}${abs(amount)}$currency"
 }

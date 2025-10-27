@@ -70,7 +70,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            // Koin Test features
+            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.koin.test)
         }
     }
