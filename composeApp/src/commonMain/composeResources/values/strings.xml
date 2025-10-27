@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TransaKtor</string>
+    <string name="onboarding_checking_account">Checking Account</string>
+    <string name="onboarding_savings_account">Savings Account</string>
+    <string name="onboarding_business_account">Business Account</string>
+    <string name="onboarding_welcome">Welcome to </string>
+    <string name="onboarding_subtitle">Your simple to understand transaction breakdown</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="dashboard_total_available_funds">Total Available Funds</string>
+    <string name="dashboard_your_accounts">Your Accounts</string>
+    <string name="dashboard_transactions">Transactions</string>
+    <string name="dashboard_see_all">See all</string>
+</resources>
