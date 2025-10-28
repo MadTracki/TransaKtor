@@ -24,16 +24,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.madtracki.transaktor.data.model.Result
+import de.madtracki.transaktor.ui.screens.dashboard.model.AccountsOverviewState
 import de.madtracki.transaktor.ui.screens.dashboard.model.TotalFunds
 import de.madtracki.transaktor.ui.screens.detail.account.AccountCard
 import de.madtracki.transaktor.ui.screens.detail.account.model.AccountItem
@@ -59,58 +62,33 @@ fun DashboardScreen(
     navigateToTransactionDetail: (id: String) -> Unit,
     navigateToAllTransactions: () -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
-        Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        when (uiState) {
-            is Result.Loading -> {
-                CircularProgressIndicator()
-            }
-
-            is Result.Error -> {
-                Text(text = uiState.throwable.message.toString())
-            }
-
-            is Result.Success -> {
-                DashboardContent(
-                    outerPadding = outerPadding,
-                    totalFunds = uiState.data.totalFunds,
-                    accountItems = uiState.data.accounts,
-                    transactionItems = uiState.data.transactions,
-                    navigateToProfile = navigateToProfile,
-                    navigateToAccountDetail = navigateToAccountDetail,
-                    navigateToTransactionDetail = navigateToTransactionDetail,
-                    navigateToAllTransactions = navigateToAllTransactions
-                )
-            }
-        }
-    }
+    DashboardContent(
+        outerPadding = outerPadding,
+        uiState = uiState,
+        navigateToProfile = navigateToProfile,
+        navigateToAccountDetail = navigateToAccountDetail,
+        navigateToTransactionDetail = navigateToTransactionDetail,
+        navigateToAllTransactions = navigateToAllTransactions
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardContent(
     outerPadding: PaddingValues = PaddingValues(),
-    totalFunds: TotalFunds,
-    accountItems: List<AccountItem>,
-    transactionItems: List<TransactionItem>,
+    uiState: Result<AccountsOverviewState>,
     navigateToProfile: () -> Unit,
     navigateToAccountDetail: (id: Long) -> Unit,
     navigateToTransactionDetail: (id: String) -> Unit,
     navigateToAllTransactions: () -> Unit
 ) {
     Scaffold(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(outerPadding),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background).padding(outerPadding),
         topBar = {
             TopAppBar(
-                title = { Text("TransaKtor") },
-                actions = {
+                title = { Text("TransaKtor") }, actions = {
                     IconButton(
                         onClick = navigateToProfile,
                         colors = IconButtonDefaults.filledIconButtonColors(
@@ -120,47 +98,87 @@ fun DashboardContent(
                         shape = CircleShape
                     ) {
                         Icon(
-                            painterResource(Res.drawable.person),
-                            contentDescription = "Profile"
+                            painterResource(Res.drawable.person), contentDescription = "Profile"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                }, colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
+    ) { outerPadding ->
+        Surface(
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+                .padding(outerPadding)
         ) {
-            item {
-                TotalBalanceCard(
-                    balance = totalFunds.balance,
-                    name = totalFunds.name,
-                    title = stringResource(Res.string.dashboard_total_available_funds)
-                )
+            Column(
+                Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when (uiState) {
+                    is Result.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    is Result.Error -> {
+                        Text(text = uiState.throwable.message.toString())
+                    }
+
+                    is Result.Success -> {
+                        DashboardSuccessContent(
+                            outerPadding = outerPadding,
+                            totalFunds = uiState.data.totalFunds,
+                            accountItems = uiState.data.accounts,
+                            transactionItems = uiState.data.transactions,
+                            navigateToAccountDetail = navigateToAccountDetail,
+                            navigateToTransactionDetail = navigateToTransactionDetail,
+                            navigateToAllTransactions = navigateToAllTransactions
+                        )
+                    }
+                }
             }
-            item { Spacer(modifier = Modifier.height(32.dp)) }
-            YourAccounts(accountItems, navigateToAccountDetail)
-            item { Spacer(modifier = Modifier.height(32.dp)) }
-            TransactionList(
-                transactionItems,
-                showSeeAllButton = true,
-                navigateToTransactionDetail,
-                navigateToAllTransactions
-            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DashboardSuccessContent(
+    outerPadding: PaddingValues = PaddingValues(),
+    totalFunds: TotalFunds,
+    accountItems: List<AccountItem>,
+    transactionItems: List<TransactionItem>,
+    navigateToAccountDetail: (id: Long) -> Unit,
+    navigateToTransactionDetail: (id: String) -> Unit,
+    navigateToAllTransactions: () -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+            .padding(horizontal = 16.dp),
+    ) {
+        item {
+            TotalBalanceCard(
+                balance = totalFunds.balance,
+                name = totalFunds.name,
+                title = stringResource(Res.string.dashboard_total_available_funds)
+            )
+        }
+        item { Spacer(modifier = Modifier.height(32.dp)) }
+        YourAccounts(accountItems, navigateToAccountDetail)
+        item { Spacer(modifier = Modifier.height(32.dp)) }
+        TransactionList(
+            transactionItems,
+            showSeeAllButton = true,
+            navigateToTransactionDetail,
+            navigateToAllTransactions
+        )
+    }
+}
+
 fun LazyListScope.YourAccounts(
-    accounts: List<AccountItem>,
-    navigateToAccountDetail: (id: Long) -> Unit
+    accounts: List<AccountItem>, navigateToAccountDetail: (id: Long) -> Unit
 ) {
     item {
         Text(
@@ -171,8 +189,7 @@ fun LazyListScope.YourAccounts(
     item { Spacer(modifier = Modifier.height(16.dp)) }
     item {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            /*
+            columns = GridCells.Fixed(2),/*
              * I am constraining the height of the grid to avoid nested infinite-height scrollables
              * (and hence a crash). This isn't the best solution, but for demonstration purposes
              * this suffices.
@@ -188,10 +205,7 @@ fun LazyListScope.YourAccounts(
              * }
              * ```
              */
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .heightIn(max = 500.dp),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().heightIn(max = 500.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             userScrollEnabled = false
@@ -212,16 +226,20 @@ fun DashboardScreenPreview(
     AppTheme {
         DashboardContent(
             outerPadding = PaddingValues(),
-            totalFunds = TotalFunds(balance = "42,899.03", name = "Max Mustermann"),
-            accountItems = listOf(
-                AccountItem(
-                    id = 1,
-                    name = "Account 1",
-                    balance = "100.00",
-                    color = Color(0xFF000000)
+            uiState = Result.Success(
+                AccountsOverviewState(
+                    totalFunds = TotalFunds(balance = "42,899.03", name = "Max Mustermann"),
+                    accounts = listOf(
+                        AccountItem(
+                            id = 1,
+                            name = "Account 1",
+                            balance = "100.00",
+                            color = Color(0xFF000000)
+                        )
+                    ),
+                    transactions = transactionItems,
                 )
             ),
-            transactionItems = transactionItems,
             navigateToProfile = {},
             navigateToAccountDetail = {},
             navigateToTransactionDetail = {},

@@ -54,6 +54,7 @@ fun OnboardingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround
@@ -79,7 +80,7 @@ fun OnboardingCards() {
                 .rotate(-4f)
                 .fillMaxWidth()
                 .height(200.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
         ) {
             Column(
                 modifier = Modifier
@@ -90,7 +91,7 @@ fun OnboardingCards() {
                 Text(
                     stringResource(Res.string.onboarding_business_account),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                 )
             }
         }
@@ -100,7 +101,7 @@ fun OnboardingCards() {
                 .rotate(-2f)
                 .fillMaxWidth()
                 .height(200.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Column(
                 modifier = Modifier
@@ -111,7 +112,7 @@ fun OnboardingCards() {
                 Text(
                     stringResource(Res.string.onboarding_savings_account),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
             }
         }
@@ -119,7 +120,7 @@ fun OnboardingCards() {
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .height(200.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Column(
                 modifier = Modifier
@@ -137,7 +138,7 @@ fun OnboardingCards() {
                 Text(
                     stringResource(Res.string.onboarding_checking_account),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }
@@ -174,8 +175,8 @@ fun OnboardingIntroduction(onContinueClicked: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Text(stringResource(Res.string.onboarding_continue))
