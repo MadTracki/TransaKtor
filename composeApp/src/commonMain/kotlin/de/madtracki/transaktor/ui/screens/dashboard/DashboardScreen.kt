@@ -76,7 +76,7 @@ fun DashboardScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardContent(
+private fun DashboardContent(
     outerPadding: PaddingValues = PaddingValues(),
     uiState: Result<AccountsOverviewState>,
     navigateToProfile: () -> Unit,
